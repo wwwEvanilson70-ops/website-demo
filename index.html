@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yeboah Evans Music Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            margin-top: 20px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border-bottom: 2px solid #fdbb2d;
+        }
+        
+        h1 {
+            font-size: 32px;
+            margin-bottom: 5px;
+            color: #fdbb2d;
+        }
+        
+        .subtitle {
+            font-size: 16px;
+            opacity: 0.8;
+        }
+        
+        .app-content {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        
+        .music-section {
+            flex: 1;
+            min-width: 300px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .calculator-section {
+            flex: 1;
+            min-width: 300px;
+            padding: 20px;
+        }
+        
+        .music-player {
+            text-align: center;
+        }
+        
+        .song-info {
+            margin-bottom: 15px;
+        }
+        
+        .song-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #fdbb2d;
+        }
+        
+        .artist {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+        .player-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .control-btn {
+            background: #fdbb2d;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #1a2a6c;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .control-btn:hover {
+            transform: scale(1.1);
+            background: #ffcc44;
+        }
+        
+        .file-upload {
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .upload-btn {
+            background: #1a2a6c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .upload-btn:hover {
+            background: #2a3a8c;
+        }
+        
+        #file-input {
+            display: none;
+        }
+        
+        .playlist {
+            margin-top: 20px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .playlist h3 {
+            margin-bottom: 10px;
+            color: #fdbb2d;
+            text-align: center;
+        }
+        
+        .playlist-item {
+            padding: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .playlist-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .playlist-item.active {
+            background: rgba(253, 187, 45, 0.2);
+            color: #fdbb2d;
+        }
+        
+        .visualizer {
+            height: 60px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 3px;
+            margin-top: 10px;
+        }
+        
+        .bar {
+            width: 5px;
+            background: #fdbb2d;
+            border-radius: 3px;
+            height: 10px;
+        }
+        
+        .calculator {
+            padding: 10px;
+        }
+        
+        .display {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            text-align: right;
+            font-size: 32px;
+            min-height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        
+        .btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 10px;
+            padding: 15px;
+            font-size: 20px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn:active {
+            transform: scale(0.95);
+        }
+        
+        .operator {
+            background: rgba(253, 187, 45, 0.3);
+        }
+        
+        .operator:hover {
+            background: rgba(253, 187, 45, 0.5);
+        }
+        
+        .equals {
+            background: #fdbb2d;
+            color: #1a2a6c;
+            grid-column: span 2;
+        }
+        
+        .equals:hover {
+            background: #ffcc44;
+        }
+        
+        .clear {
+            background: rgba(178, 31, 31, 0.7);
+        }
+        
+        .clear:hover {
+            background: rgba(178, 31, 31, 0.9);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 15px;
+            font-size: 14px;
+            opacity: 0.7;
+            margin-top: 20px;
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: #fdbb2d;
+            border-radius: 5px;
+            width: 0%;
+            transition: width 0.1s;
+        }
+        
+        .time-display {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+            font-size: 12px;
+            opacity: 0.7;
+        }
+        
+        @media (max-width: 650px) {
+            .app-content {
+                flex-direction: column;
+            }
+            
+            .music-section {
+                border-right: none;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Yeboah Evans</h1>
+            <p class="subtitle">Music Calculator - Calculate with Your Own Music</p>
+        </header>
+        
+        <div class="app-content">
+            <div class="music-section">
+                <div class="file-upload">
+                    <input type="file" id="file-input" accept="audio/*" multiple>
+                    <button class="upload-btn" id="upload-btn">Import Music Files</button>
+                </div>
+                
+                <div class="music-player">
+                    <div class="song-info">
+                        <div class="song-title">No song selected</div>
+                        <div class="artist">Import your music files</div>
+                    </div>
+                    
+                    <div class="visualizer" id="visualizer">
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                    </div>
+                    
+                    <div class="progress-container" id="progress-container">
+                        <div class="progress-bar" id="progress-bar"></div>
+                    </div>
+                    
+                    <div class="time-display">
+                        <span id="current-time">0:00</span>
+                        <span id="duration">0:00</span>
+                    </div>
+                    
+                    <div class="player-controls">
+                        <button class="control-btn" id="prev-btn">⏮</button>
+                        <button class="control-btn" id="play-btn">▶</button>
+                        <button class="control-btn" id="next-btn">⏭</button>
+                    </div>
+                </div>
+                
+                <div class="playlist">
+                    <h3>Your Playlist</h3>
+                    <div id="playlist-container">No songs imported yet</div>
+                </div>
+            </div>
+            
+            <div class="calculator-section">
+                <div class="calculator">
+                    <div class="display" id="display">0</div>
+                    <div class="buttons">
+                        <button class="btn clear" id="clear">C</button>
+                        <button class="btn clear" id="backspace">⌫</button>
+                        <button class="btn operator" data-value="/">/</button>
+                        <button class="btn operator" data-value="*">×</button>
+                        
+                        <button class="btn" data-value="7">7</button>
+                        <button class="btn" data-value="8">8</button>
+                        <button class="btn" data-value="9">9</button>
+                        <button class="btn operator" data-value="-">-</button>
+                        
+                        <button class="btn" data-value="4">4</button>
+                        <button class="btn" data-value="5">5</button>
+                        <button class="btn" data-value="6">6</button>
+                        <button class="btn operator" data-value="+">+</button>
+                        
+                        <button class="btn" data-value="1">1</button>
+                        <button class="btn" data-value="2">2</button>
+                        <button class="btn" data-value="3">3</button>
+                        <button class="btn" data-value="0">0</button>
+                        
+                        <button class="btn" data-value=".">.</button>
+                        <button class="btn equals" id="equals">=</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Music Calculator App • Created by Yeboah Evans</p>
+        </footer>
+    </div>
+
+    <script>
+        // Calculator functionality
+        const display = document.getElementById('display');
+        const buttons = document.querySelectorAll('.btn');
+        const clearBtn = document.getElementById('clear');
+        const backspaceBtn = document.getElementById('backspace');
+        const equalsBtn = document.getElementById('equals');
+        
+        let currentInput = '0';
+        let previousInput = '';
+        let operator = null;
+        let resetScreen = false;
+        
+        // Update display
+        function updateDisplay() {
+            display.textContent = currentInput;
+        }
+        
+        // Reset calculator
+        function resetCalculator() {
+            currentInput = '0';
+            previousInput = '';
+            operator = null;
+            resetScreen = false;
+            updateDisplay();
+        }
+        
+        // Handle number input
+        function inputNumber(number) {
+            if (currentInput === '0' || resetScreen) {
+                currentInput = number;
+                resetScreen = false;
+            } else {
+                currentInput += number;
+            }
+            updateDisplay();
+        }
+        
+        // Handle decimal point
+        function inputDecimal() {
+            if (resetScreen) {
+                currentInput = '0.';
+                resetScreen = false;
+            } else if (!currentInput.includes('.')) {
+                currentInput += '.';
+            }
+            updateDisplay();
+        }
+        
+        // Handle operator
+        function handleOperator(nextOperator) {
+            const inputValue = parseFloat(currentInput);
+            
+            if (operator && resetScreen) {
+                operator = nextOperator;
+                return;
+            }
+            
+            if (previousInput === '' && !isNaN(inputValue)) {
+                previousInput = inputValue;
+            } else if (operator) {
+                const result = calculate(previousInput, inputValue, operator);
+                currentInput = `${parseFloat(result.toFixed(7))}`;
+                previousInput = result;
+            }
+            
+            resetScreen = true;
+            operator = nextOperator;
+            updateDisplay();
+        }
+        
+        // Perform calculation
+        function calculate(firstOperand, secondOperand, operator) {
+            switch (operator) {
+                case '+':
+                    return firstOperand + secondOperand;
+                case '-':
+                    return firstOperand - secondOperand;
+                case '*':
+                    return firstOperand * secondOperand;
+                case '/':
+                    if (secondOperand === 0) {
+                        alert("Cannot divide by zero!");
+                        return firstOperand;
+                    }
+                    return firstOperand / secondOperand;
+                default:
+                    return secondOperand;
+            }
+        }
+        
+        // Add event listeners to calculator buttons
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                const value = button.getAttribute('data-value');
+                
+                if (value >= '0' && value <= '9') {
+                    inputNumber(value);
+                } else if (value === '.') {
+                    inputDecimal();
+                } else if (['+', '-', '*', '/'].includes(value)) {
+                    handleOperator(value);
+                }
+            });
+        });
+        
+        // Clear button
+        clearBtn.addEventListener('click', resetCalculator);
+        
+        // Backspace button
+        backspaceBtn.addEventListener('click', () => {
+            if (currentInput.length > 1) {
+                currentInput = currentInput.slice(0, -1);
+            } else {
+                currentInput = '0';
+            }
+            updateDisplay();
+        });
+        
+        // Equals button
+        equalsBtn.addEventListener('click', () => {
+            if (operator === null || resetScreen) return;
+            
+            const inputValue = parseFloat(currentInput);
+            const result = calculate(previousInput, inputValue, operator);
+            
+            currentInput = `${parseFloat(result.toFixed(7))}`;
+            operator = null;
+            previousInput = '';
+            resetScreen = true;
+            updateDisplay();
+        });
+        
+        // Music player functionality
+        const fileInput = document.getElementById('file-input');
+        const uploadBtn = document.getElementById('upload-btn');
+        const playBtn = document.getElementById('play-btn');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const progressContainer = document.getElementById('progress-container');
+        const progressBar = document.getElementById('progress-bar');
+        const currentTimeEl = document.getElementById('current-time');
+        const durationEl = document.getElementById('duration');
+        const playlistContainer = document.getElementById('playlist-container');
+        const songTitle = document.querySelector('.song-title');
+        const artist = document.querySelector('.artist');
+        const visualizer = document.getElementById('visualizer');
+        const bars = document.querySelectorAll('.bar');
+        
+        let audio = new Audio();
+        let isPlaying = false;
+        let currentSongIndex = 0;
+        let songs = [];
+        let visualizerInterval;
+        
+        // Upload button click triggers file input
+        uploadBtn.addEventListener('click', () => {
+            fileInput.click();
+        });
+        
+        // Handle file selection
+        fileInput.addEventListener('change', (e) => {
+            const files = Array.from(e.target.files);
+            
+            if (files.length === 0) return;
+            
+            songs = files.map(file => {
+                return {
+                    name: file.name.replace(/\.[^/.]+$/, ""), // Remove file extension
+                    file: URL.createObjectURL(file)
+                };
+            });
+            
+            updatePlaylist();
+            
+            // Auto-play the first song
+            if (songs.length > 0) {
+                currentSongIndex = 0;
+                loadSong(currentSongIndex);
+                playSong();
+            }
+        });
+        
+        // Update playlist display
+        function updatePlaylist() {
+            if (songs.length === 0) {
+                playlistContainer.innerHTML = 'No songs imported yet';
+                return;
+            }
+            
+            playlistContainer.innerHTML = '';
+            songs.forEach((song, index) => {
+                const item = document.createElement('div');
+                item.className = 'playlist-item';
+                if (index === currentSongIndex) {
+                    item.classList.add('active');
+                }
+                item.textContent = song.name;
+                item.addEventListener('click', () => {
+                    currentSongIndex = index;
+                    loadSong(currentSongIndex);
+                    playSong();
+                    updatePlaylist();
+                });
+                playlistContainer.appendChild(item);
+            });
+        }
+        
+        // Load a song
+        function loadSong(index) {
+            if (songs.length === 0) return;
+            
+            audio.src = songs[index].file;
+            songTitle.textContent = songs[index].name;
+            artist.textContent = 'Imported Music';
+            
+            audio.addEventListener('loadedmetadata', () => {
+                durationEl.textContent = formatTime(audio.duration);
+            });
+            
+            updatePlaylist();
+        }
+        
+        // Play song
+        function playSong() {
+            if (songs.length === 0) return;
+            
+            isPlaying = true;
+            audio.play();
+            playBtn.textContent = '⏸';
+            
+            // Start visualizer animation
+            startVisualizer();
+        }
+        
+        // Pause song
+        function pauseSong() {
+            isPlaying = false;
+            audio.pause();
+            playBtn.textContent = '▶';
+            
+            // Stop visualizer animation
+            stopVisualizer();
+        }
+        
+        // Format time in mm:ss
+        function formatTime(seconds) {
+            if (isNaN(seconds)) return "0:00";
+            const min = Math.floor(seconds / 60);
+            const sec = Math.floor(seconds % 60);
+            return `${min}:${sec < 10 ? '0' : ''}${sec}`;
+        }
+        
+        // Update progress bar
+        function updateProgress() {
+            const duration = audio.duration;
+            const currentTime = audio.currentTime;
+            
+            if (isNaN(duration)) return;
+            
+            const progressPercent = (currentTime / duration) * 100;
+            progressBar.style.width = `${progressPercent}%`;
+            currentTimeEl.textContent = formatTime(currentTime);
+        }
+        
+        // Set progress bar on click
+        function setProgress(e) {
+            const width = this.clientWidth;
+            const clickX = e.offsetX;
+            const duration = audio.duration;
+            
+            if (isNaN(duration)) return;
+            
+            audio.currentTime = (clickX / width) * duration;
+        }
+        
+        // Previous song
+        function prevSong() {
+            if (songs.length === 0) return;
+            
+            currentSongIndex--;
+            if (currentSongIndex < 0) {
+                currentSongIndex = songs.length - 1;
+            }
+            loadSong(currentSongIndex);
+            playSong();
+        }
+        
+        // Next song
+        function nextSong() {
+            if (songs.length === 0) return;
+            
+            currentSongIndex++;
+            if (currentSongIndex > songs.length - 1) {
+                currentSongIndex = 0;
+            }
+            loadSong(currentSongIndex);
+            playSong();
+        }
+        
+        // Start visualizer animation
+        function startVisualizer() {
+            stopVisualizer(); // Clear any existing interval
+            
+            visualizerInterval = setInterval(() => {
+                bars.forEach(bar => {
+                    const randomHeight = Math.floor(Math.random() * 40) + 10;
+                    bar.style.height = `${randomHeight}px`;
+                });
+            }, 150);
+        }
+        
+        // Stop visualizer animation
+        function stopVisualizer() {
+            if (visualizerInterval) {
+                clearInterval(visualizerInterval);
+            }
+            
+            bars.forEach(bar => {
+                bar.style.height = '10px';
+            });
+        }
+        
+        // Event listeners for music player
+        playBtn.addEventListener('click', () => {
+            if (songs.length === 0) {
+                alert('Please import music files first');
+                return;
+            }
+            
+            isPlaying ? pauseSong() : playSong();
+        });
+        
+        prevBtn.addEventListener('click', prevSong);
+        nextBtn.addEventListener('click', nextSong);
+        
+        audio.addEventListener('timeupdate', updateProgress);
+        audio.addEventListener('ended', nextSong);
+        progressContainer.addEventListener('click', setProgress);
+        
+        // Initialize display
+        updateDisplay();
+    </script>
+</body>
+</html>
